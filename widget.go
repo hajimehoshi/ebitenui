@@ -39,15 +39,15 @@ func NewWidget(content WidgetContent) *Widget {
 	return w
 }
 
-func forEachNode(node *layout.Node, f func(node *layout.Node)) {
+func walk(node *layout.Node, f func(node *layout.Node)) {
 	f(node)
 	for _, c := range node.ChildNodes() {
-		forEachNode(c, f)
+		walk(c, f)
 	}
 }
 
 func (w *Widget) Update() {
-	forEachNode(&w.node, func(node *layout.Node) {
+	walk(&w.node, func(node *layout.Node) {
 		if node.Object != nil {
 			node.Object.(WidgetContent).Update()
 		}
@@ -56,7 +56,7 @@ func (w *Widget) Update() {
 }
 
 func (w *Widget) Draw(screen *ebiten.Image) {
-	forEachNode(&w.node, func(node *layout.Node) {
+	walk(&w.node, func(node *layout.Node) {
 		if node.Object != nil {
 			node.Object.(WidgetContent).Draw(screen, node.Abs())
 		}
